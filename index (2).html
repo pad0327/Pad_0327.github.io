@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pad — Cover MV / PV</title>
+<meta name="description" content="Pad — 커버곡 MV / PV 제작. After Effects · Photoshop. EN / KR / JP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#0a0a0a;
+  --bg-2:#141414;
+  --surface:#1a1a1a;
+  --line:rgba(255,255,255,.08);
+  --text:#f2f2f2;
+  --muted:#8a8a8a;
+  --dim:#4a4a4a;
+  --accent:#ff5a1f;      /* orange point color */
+  --accent-2:#ff8a4c;
+  --radius:22px;
+  --font: "Manrope","Pretendard",system-ui,sans-serif;
+  --font-jp: "Manrope","Noto Sans JP","Pretendard",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.5;
+}
+/* concrete grain */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+a{color:inherit;text-decoration:none}
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 32px}
+@media(max-width:640px){.wrap{padding:0 16px}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,backdrop-filter .3s}
+nav.scrolled{background:rgba(10,10,10,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.02em}
+.logo i{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 16px var(--accent)}
+.menu{display:flex;gap:28px;font-size:13px;color:var(--muted)}
+.menu a:hover{color:var(--text)}
+@media(max-width:640px){.menu{gap:16px;font-size:12px}}
+
+html[lang="ja"] body{font-family:var(--font-jp)}
+.navr{display:flex;align-items:center;gap:28px}
+.lang{display:flex;border:1px solid var(--line);border-radius:99px;padding:3px;background:rgba(255,255,255,.03)}
+.lang button{background:none;border:0;color:var(--muted);font:inherit;font-size:11px;font-weight:700;letter-spacing:.08em;padding:6px 10px;border-radius:99px;cursor:pointer;transition:.2s}
+.lang button:hover{color:var(--text)}
+.lang button.on{background:var(--accent);color:#0a0a0a}
+@media(max-width:720px){.menu{display:none}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 80px}
+.hero-bg{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;pointer-events:none;
+  font-weight:800;font-size:clamp(120px,24vw,360px);line-height:.82;letter-spacing:-.06em;
+  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.05);white-space:nowrap}
+.hero-bg span:last-child{align-self:flex-end;margin-right:-4vw}
+.glow{position:absolute;width:620px;height:620px;border-radius:50%;right:-160px;top:10%;
+  background:radial-gradient(circle,rgba(255,90,31,.28),transparent 65%);filter:blur(30px);animation:float 12s ease-in-out infinite}
+@keyframes float{50%{transform:translate(-60px,40px)}}
+.hero .wrap{width:100%}
+.h-line{font-weight:600;letter-spacing:-.045em;line-height:1;font-size:clamp(52px,9vw,132px)}
+.h1{display:flex;align-items:flex-start;gap:22px;flex-wrap:wrap}
+.h1 small{font-size:13px;font-weight:400;letter-spacing:0;color:var(--muted);line-height:1.5;max-width:170px;margin-top:14px}
+.h2{color:#fff;opacity:.35;filter:blur(5px);padding-left:12vw;margin:.12em 0;transition:filter .6s,opacity .6s}
+.h2:hover{filter:blur(0);opacity:1}
+.h3{text-align:right}
+.h3 em{font-style:normal;color:var(--accent)}
+.hero-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:56px;gap:24px;flex-wrap:wrap}
+.star{width:44px;height:44px;color:var(--accent);animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn{display:inline-flex;align-items:center;gap:12px;padding:16px 28px;border-radius:14px;font-size:14px;font-weight:600;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(10px);transition:.25s}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:#0a0a0a}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:#0a0a0a}
+.btn.solid:hover{background:#fff;border-color:#fff}
+
+/* PANEL (notched section) */
+.panel{position:relative;background:var(--bg-2);border-radius:36px;margin:0 16px;padding:110px 0 90px;border:1px solid var(--line)}
+.panel::before{content:"";position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:120px;height:26px;
+  background:var(--bg);border-radius:0 0 22px 22px;border:1px solid var(--line);border-top:0}
+.panel .notch-star{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:22px;color:var(--accent);z-index:2}
+.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+.title{font-weight:500;text-transform:uppercase;letter-spacing:-.02em;line-height:1.15;font-size:clamp(30px,4.4vw,56px)}
+.title .indent{display:block;padding-left:8vw}
+.title .o{color:var(--accent)}
+
+.about{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;margin-top:70px;align-items:start}
+.socials{display:flex;flex-direction:column;gap:16px;color:var(--muted)}
+.socials a:hover{color:var(--accent)}
+.socials svg{width:20px;height:20px}
+.lead{font-size:clamp(20px,2vw,26px);line-height:1.4;letter-spacing:-.02em}
+.lead .m{color:var(--dim)}
+.lead-ko{margin-top:24px;color:var(--muted);font-size:14px;line-height:1.75;max-width:360px}
+.langs{display:flex;gap:8px;margin-top:28px}
+.langs span{padding:6px 12px;border:1px solid var(--line);border-radius:99px;font-size:12px;color:var(--muted)}
+.langs span:first-child{border-color:var(--accent);color:var(--accent)}
+.svc{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.svc-card .vis{display:grid;place-items:center}
+.sico{width:72px;height:72px;color:rgba(255,255,255,.85);transition:.35s;position:relative;z-index:1}
+.svc-card:hover .sico{color:var(--accent);transform:scale(1.08)}
+.svc-card h4{display:flex;justify-content:space-between}
+.svc-card .arr{color:var(--accent)}
+.svc-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .35s,border-color .35s}
+.svc-card:hover{transform:translateY(-6px);border-color:rgba(255,90,31,.5)}
+.svc-card .vis{aspect-ratio:4/3;position:relative;overflow:hidden}
+.svc-card .vis::after{content:"";position:absolute;inset:0;background-image:inherit}
+.svc-card .body{padding:18px}
+.svc-card h4{font-size:15px;font-weight:600;margin-bottom:8px}
+.svc-card p{font-size:12.5px;color:var(--muted);line-height:1.55}
+.v1{background:radial-gradient(circle at 30% 30%,#3a3a3a,#111 70%)}
+.v2{background:linear-gradient(160deg,#2a2a2a,#0d0d0d)}
+.v3{background:repeating-linear-gradient(180deg,#ff5a1f 0 14%,#c8461a 14% 26%,#3b3b3b 26% 40%,#7a7a7a 40% 52%,#1d1d1d 52% 66%,#ff8a4c 66% 78%,#262626 78% 100%)}
+.v1 b,.v2 b{position:absolute;inset:0;display:grid;place-items:center;font-size:54px;font-weight:800;letter-spacing:-.05em;color:rgba(255,255,255,.08)}
+.v2 b{color:transparent;-webkit-text-stroke:1px rgba(255,90,31,.6)}
+.panel-foot{display:flex;justify-content:space-between;margin-top:56px;font-size:12px;color:var(--dim)}
+
+@media(max-width:960px){
+  .about{grid-template-columns:1fr}
+}
+@media(max-width:520px){.panel{margin:0 8px}}
+
+/* PROCESS */
+.process{position:relative;padding:140px 0 60px}
+.proc-grid{position:relative;display:grid;grid-template-columns:repeat(12,1fr);row-gap:60px;column-gap:24px}
+.proc{position:relative;border-radius:var(--radius);padding:28px;min-height:280px;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(135deg,#202020 0%,#161616 40%,#3a3a3a 100%);border:1px solid var(--line);overflow:hidden;transition:.4s}
+.proc::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 100% 100%,rgba(255,90,31,.0),transparent 60%);transition:.4s}
+.proc:hover::after{background:radial-gradient(circle at 100% 100%,rgba(255,90,31,.35),transparent 60%)}
+.proc svg.ic{width:40px;height:40px;color:#ddd}
+.proc .n{font-size:12px;color:var(--accent);margin-bottom:10px}
+.proc h3{font-size:26px;font-weight:500;letter-spacing:-.02em;margin-bottom:10px}
+.proc p{font-size:13px;color:#a8a8a8;max-width:380px;position:relative;z-index:1}
+.p1{grid-column:1/6}
+.p2{grid-column:7/12;margin-top:150px}
+.p3{grid-column:2/7}
+.p4{grid-column:8/13;margin-top:120px}
+.proc-lines{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:visible}
+@media(max-width:860px){.proc-grid{grid-template-columns:1fr;row-gap:20px}.p1,.p2,.p3,.p4{grid-column:auto;margin-top:0}.proc-lines{display:none}}
+
+/* WORKS */
+.works{padding:120px 0}
+.works-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:48px;flex-wrap:wrap}
+.badge{width:110px;height:110px;position:relative;flex:none}
+.badge svg{width:100%;height:100%;animation:spin 18s linear infinite}
+.badge .core{position:absolute;inset:0;display:grid;place-items:center}
+.badge .core svg{width:34px;height:34px;color:var(--accent);animation:none}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.filters button{background:transparent;border:1px solid var(--line);color:var(--muted);padding:9px 18px;border-radius:99px;font:inherit;font-size:13px;cursor:pointer;transition:.2s}
+.filters button.on,.filters button:hover{border-color:var(--accent);color:var(--text)}
+.filters button.on{background:var(--accent);color:#0a0a0a}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid .item:first-child{grid-column:span 2;grid-row:span 2}
+@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.grid .item:first-child{grid-column:auto;grid-row:auto}}
+.item{cursor:pointer;display:flex;flex-direction:column;gap:12px}
+.thumb{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/9;background:var(--surface);border:1px solid var(--line);flex:1}
+.grid .item:first-child .thumb{aspect-ratio:auto;min-height:0}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .6s,filter .6s;filter:grayscale(.6) brightness(.8)}
+.item:hover .thumb img{transform:scale(1.05);filter:none}
+.thumb .ph{position:absolute;inset:0;display:grid;place-items:center;background:
+  radial-gradient(circle at 70% 30%,rgba(255,90,31,.25),transparent 55%),linear-gradient(135deg,#1c1c1c,#0e0e0e);
+  font-size:13px;color:var(--dim);letter-spacing:.15em}
+.play{position:absolute;left:50%;top:50%;width:64px;height:64px;border-radius:50%;transform:translate(-50%,-50%) scale(.8);
+  background:var(--accent);display:grid;place-items:center;opacity:0;transition:.3s}
+.play svg{width:20px;height:20px;margin-left:3px;color:#0a0a0a}
+.item:hover .play{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.tag{position:absolute;top:14px;left:14px;font-size:11px;padding:5px 10px;border-radius:99px;background:rgba(10,10,10,.7);backdrop-filter:blur(8px);border:1px solid var(--line)}
+.meta{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.meta b{font-weight:600}
+.meta span{color:var(--muted);font-size:12px;white-space:nowrap}
+.meta small{display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:2px}
+
+/* COMMISSION */
+.comm{padding:40px 0 100px}
+.specs{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:48px 0 20px}
+.spec{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.spec small{display:block;font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.spec b{font-size:20px;font-weight:600;letter-spacing:-.02em}
+.spec b em{font-style:normal;color:var(--accent)}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.box{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);padding:32px}
+.box h3{font-size:18px;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.box h3::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.box ol,.box ul{padding-left:18px;color:#bdbdbd;font-size:14px;line-height:1.8}
+.box li+li{margin-top:6px}
+.box .note{margin-top:16px;font-size:13px;color:var(--accent)}
+.use{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.use div{border:1px solid var(--line);border-radius:14px;padding:18px}
+.use h4{font-size:15px;margin-bottom:10px}
+.use p{font-size:13px;color:var(--muted);line-height:1.8}
+.use .y{color:var(--text)}.use .y::before{content:"● ";color:var(--accent)}
+.use .n::before{content:"○ ";color:var(--dim)}
+.refund{display:flex;flex-direction:column;gap:10px}
+.refund div{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;color:#bdbdbd}
+.refund b{color:var(--text)}
+.form{position:relative;background:#0e0e0e;border:1px solid var(--line);border-radius:14px;padding:20px;font-size:14px;line-height:2;color:#cfcfcf;white-space:pre-line}
+.copy{position:absolute;top:14px;right:14px;background:var(--accent);color:#0a0a0a;border:0;border-radius:99px;padding:8px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.span2{grid-column:1/-1}
+.ext{display:inline-flex;margin-top:24px}
+@media(max-width:900px){.specs{grid-template-columns:repeat(2,1fr)}.cgrid{grid-template-columns:1fr}}
+@media(max-width:480px){.use{grid-template-columns:1fr}.box{padding:24px}}
+
+/* CONTACT */
+.contact{padding:60px 0 40px}
+.cta{position:relative;border-radius:36px;overflow:hidden;padding:80px 56px;background:var(--accent);color:#0a0a0a}
+.cta::before{content:"";position:absolute;inset:0;opacity:.25;mix-blend-mode:multiply;background-image:inherit}
+.cta h2{font-size:clamp(40px,7vw,104px);font-weight:700;letter-spacing:-.05em;line-height:.95}
+.cta-row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:28px;margin-top:48px}
+.cta p{max-width:380px;font-size:15px;line-height:1.6;font-weight:500}
+.cta .mail{font-size:clamp(18px,2.4vw,28px);font-weight:700;border-bottom:2px solid #0a0a0a;padding-bottom:4px;word-break:break-all}
+.cta .mail:hover{color:#fff;border-color:#fff}
+@media(max-width:640px){.cta{padding:48px 24px;border-radius:24px}}
+footer{display:flex;justify-content:space-between;padding:36px 0 48px;font-size:12px;color:var(--dim);flex-wrap:wrap;gap:12px}
+
+/* LIGHTBOX */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:24px}
+.lb.open{display:flex}
+.lb-in{width:min(1100px,100%)}
+.lb-frame{aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.lb-frame iframe{width:100%;height:100%;border:0}
+.lb-bar{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:16px}
+.lb-close{background:none;border:1px solid var(--line);color:var(--text);width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer}
+.lb-close:hover{background:var(--accent);color:#0a0a0a;border-color:var(--accent)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="star" viewBox="0 0 100 100"><path fill="currentColor" d="M50 0l9 22 21-12-5 24 24 3-18 16 18 16-24 3 5 24-21-12-9 22-9-22-21 12 5-24-24-3 18-16L1 37l24-3-5-24 21 12z"/></symbol>
+  <symbol id="playic" viewBox="0 0 24 24"><path fill="currentColor" d="M6 4l14 8-14 8z"/></symbol>
+</svg>
+
+<nav id="nav">
+  <div class="wrap">
+    <a href="#top" class="logo"><i></i>Pad</a>
+    <div class="navr">
+      <div class="menu">
+        <a href="#about">About</a>
+        <a href="#process">Process</a>
+        <a href="#works">Works</a>
+        <a href="#commission">Commission</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="lang" id="langSw" role="group" aria-label="Language">
+        <button data-l="en">EN</button><button data-l="ko">KR</button><button data-l="ja">JP</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero-bg"><span>Motion</span><span>Pad.</span></div>
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="h-line h1 rv">Pad.<small data-i18n="hero.sub">커버곡 PV / MV 제작<br>Cover · PV · MV<br>#서브컬쳐</small></div>
+    <div class="h-line h2 rv">Only rhythm.</div>
+    <div class="h-line h3 rv">Only <em>story.</em></div>
+    <div class="hero-foot rv">
+      <svg class="star"><use href="#star"/></svg>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a href="#works" class="btn"><span data-i18n="btn.works">작업물 보기</span> <span>→</span></a><a href="#commission" class="btn solid"><span data-i18n="btn.comm">커미션 신청</span> <span>→</span></a></div>
+    </div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section class="panel" id="about">
+  <svg class="notch-star"><use href="#star"/></svg>
+  <div class="wrap">
+    <div class="eyebrow rv">About</div>
+    <h2 class="title rv">Visuals that move<span class="indent">— <span class="o">with</span> the music</span></h2>
+
+    <div class="about">
+      <div class="rv">
+        <p class="lead">I don't make <span class="m">ordinary</span> videos,<br>I make <span class="m">moments that</span><br>stay with the sound.</p>
+        <p class="lead-ko" data-i18n="about.body">안녕하세요, 영상 만들고 있는 Pad 입니다.<br>커버곡 PV / MV를 중심으로, 일러스트와 곡의 분위기에 맞춘 연출을 After Effects · Photoshop으로 제작합니다.</p>
+        <div class="langs"><span>#MV</span><span>#PV</span><span data-i18n="tag.sub">#서브컬쳐</span><span data-i18n="tag.cover">#커버곡</span></div>
+      </div>
+
+      <div class="svc rv">
+        <a class="svc-card" href="https://www.youtube.com/@pad0327" target="_blank" rel="noopener">
+          <div class="vis v1"><svg class="sico" viewBox="0 0 24 24"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></div>
+          <div class="body"><h4>YouTube <span class="arr">↗</span></h4><p>@pad0327<br><span data-i18n="sns.yt">완성된 PV / MV 작업물</span></p></div>
+        </a>
+        <a class="svc-card" href="https://x.com/Pad_edit" target="_blank" rel="noopener">
+          <div class="vis v2"><svg class="sico" viewBox="0 0 24 24"><path fill="currentColor" d="M18.2 2.3h3.4l-7.4 8.4L23 21.7h-6.8l-5.3-6.9-6.1 6.9H1.4l7.9-9L1 2.3h7l4.8 6.3zm-1.2 17.4h1.9L7.1 4.2H5.1z"/></svg></div>
+          <div class="body"><h4>X (Twitter) <span class="arr">↗</span></h4><p>@Pad_edit<br><span data-i18n="sns.x">작업 소식 · DM 문의</span></p></div>
+        </a>
+      </div>
+    </div>
+
+    <div class="panel-foot"><span>Made with After Effects · Photoshop</span><span>EN / KR / JP</span></div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="eyebrow rv">Process</div>
+    <h2 class="title rv" style="margin-bottom:70px">How it <span class="o">comes</span> together</h2>
+    <div class="proc-grid" id="procGrid">
+      <svg class="proc-lines" id="procLines"></svg>
+      <div class="proc p1 rv">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <div><div class="n">01</div><h3>Request</h3><p><span data-i18n="p1">커미션 신청 후 곡(믹싱본), 일러스트, 참고 영상을 확인합니다.</span></p></div>
+      </div>
+      <div class="proc p2 rv">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2l10 5-10 5L2 7z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/></svg>
+        <div><div class="n">02</div><h3>Quote</h3><p><span data-i18n="p2">소스를 바탕으로 견적을 안내드리고, 입금 확인 후 작업을 시작합니다.</span></p></div>
+      </div>
+      <div class="proc p3 rv">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg>
+        <div><div class="n">03</div><h3>1st Render</h3><p><span data-i18n="p3">1차 렌더링은 풀 영상으로 전달드리며, 피드백은 1회 진행됩니다.</span></p></div>
+      </div>
+      <div class="proc p4 rv">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+        <div><div class="n">04</div><h3>Deliver</h3><p><span data-i18n="p4">피드백 반영·수정 작업 후 최종본(mp4, 1920×1080)을 전달드립니다.</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section class="works" id="works">
+  <div class="wrap">
+    <div class="works-head">
+      <div>
+        <div class="eyebrow rv">Selected Works</div>
+        <h2 class="title rv">The real <span class="o">frames</span><span class="indent">we created</span></h2>
+      </div>
+      <div class="badge rv">
+        <svg viewBox="0 0 100 100"><defs><path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+          <text font-size="10.5" fill="#f2f2f2" letter-spacing="2.2" font-family="Manrope"><textPath href="#circ">ONLY RHYTHM · ONLY STORY · ONLY PAD · </textPath></text></svg>
+        <div class="core"><svg><use href="#star"/></svg></div>
+      </div>
+    </div>
+    <div class="filters rv" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- COMMISSION -->
+<section class="comm" id="commission">
+  <div class="wrap">
+    <div class="eyebrow rv">Commission</div>
+    <h2 class="title rv">Cover PV / MV<span class="indent"><span class="o">commission</span> info</span></h2>
+
+    <div class="specs rv">
+      <div class="spec"><small>File</small><b>mp4</b></div>
+      <div class="spec"><small>Size</small><b>1920×1080</b></div>
+      <div class="spec"><small>Revision</small><b data-i18n="spec.rev"><em>2</em>회</b></div>
+      <div class="spec"><small>Period</small><b data-i18n="spec.period">시작일로부터 <em>30</em>일</b></div>
+      <div class="spec"><small>Length</small><b data-i18n="spec.len">4분 기준</b><div style="font-size:12px;color:var(--muted);margin-top:4px"><span data-i18n="spec.extra">초과 시 +30초당 5,000원</span></div></div>
+    </div>
+
+    <div class="cgrid">
+      <div class="box rv">
+        <h3><span data-i18n="use.h">용도 구분</span></h3>
+        <div class="use">
+          <div><h4 data-i18n="use.b">방송용</h4><p><span class="n" data-i18n="use.noprofit">수익 창출 X</span><br><span class="y" data-i18n="use.sns">SNS 업로드 · 방송 송출 O</span></p></div>
+          <div><h4 data-i18n="use.c">상업용</h4><p><span class="y" data-i18n="use.profit">수익 창출 O</span><br><span class="y" data-i18n="use.sns">SNS 업로드 · 방송 송출 O</span></p></div>
+        </div>
+        <p class="note" data-i18n="use.note">※ 가격은 완성된 일러스트, 믹싱본, 참고 영상을 확인한 뒤 안내드립니다.</p>
+      </div>
+
+      <div class="box rv">
+        <h3><span data-i18n="ref.h">환불 정책</span></h3>
+        <div class="refund">
+          <div><span><span data-i18n="ref.1">작업 시작 전</span></span><b><span data-i18n="ref.full">100% 환불</span></b></div>
+          <div><span><span data-i18n="ref.2">작업 도중</span></span><b><span data-i18n="ref.half">50% 환불</span></b></div>
+          <div><span><span data-i18n="ref.3">작업 완료 후</span></span><b><span data-i18n="ref.no">환불 불가</span></b></div>
+        </div>
+      </div>
+
+      <div class="box rv">
+        <h3><span data-i18n="rules.h">필독사항</span></h3>
+        <ol data-i18n="rules.list">
+          <li>모든 영상 작업물은 포트폴리오로 사용될 수 있습니다.</li>
+          <li>영상의 저작권은 Pad에게 있으며 수정 및 2차 가공을 금지합니다. (저작권은 일체 양도되지 않습니다.)</li>
+          <li>모든 곡은 4분 기준이며, 초과 시 추가금이 있습니다. (+30초 5,000원)</li>
+          <li>영상은 After Effects, Photoshop으로 제작합니다.</li>
+          <li>영상에 들어가는 모든 오브젝트(일러스트, 음원 등)의 저작권 및 2차 수정 허락은 직접 받아주셔야 합니다.</li>
+        </ol>
+        <p class="note" data-i18n="rules.note">* AI 일러스트는 받지 않습니다.<br>* 위 사항을 읽지 않아 생기는 불이익은 책임지지 않습니다.</p>
+      </div>
+
+      <div class="box rv">
+        <h3><span data-i18n="form.h">신청 양식</span></h3>
+        <div class="form"><button class="copy" id="copyBtn" data-i18n="form.copy">복사</button><span id="formText" data-i18n="form.body">신청자 닉네임 :
+라인업 :
+인원 수 :
+원본 링크 :
+예상 예산 :
+자막 언어 :
+원하는 레퍼런스, 요청사항 (필수 X) :</span></div>
+        <p class="note" data-i18n="form.note">* 원하시는 연출이 있으면 미리 기재해주세요.<br>* 캐릭터·배경 일러스트는 투명화(PNG) / PSD 상태로 전달해주세요.</p>
+      </div>
+    </div>
+
+    <a class="btn solid ext rv" href="https://artmug.kr/index.php?channel=view&amp;uid=60523" target="_blank" rel="noopener"><span data-i18n="btn.artmug">아트머그에서 신청하기</span> <span>↗</span></a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="cta rv">
+      <h2>Let's make<br>something move.</h2>
+      <div class="cta-row">
+        <p data-i18n="contact.body">커버곡 PV · MV 의뢰는 아트머그 또는 메일 · DM으로 편하게 문의주세요. 문의 시 일러스트, 믹싱본, 참고 영상을 함께 보내주시면 빠르게 견적 드려요. English / 日本語 OK.</p>
+        <a class="mail" href="mailto:kimpadty20@gmail.com">kimpadty20@gmail.com ↗</a>
+      </div>
+    </div>
+    <footer><span>© <span id="yr"></span> Pad. All rights reserved.</span><span>Cover PV / MV — EN · KR · JP</span></footer>
+  </div>
+</section>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <div class="lb-in">
+    <div class="lb-frame" id="lbFrame"></div>
+    <div class="lb-bar"><div class="meta" id="lbMeta"></div><button class="lb-close" id="lbClose" aria-label="닫기">×</button></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   🌐 다국어 텍스트 — ko(한국어) / en(English) / ja(日本語)
+   문구를 바꾸려면 여기서 해당 언어의 값을 수정하세요.
+   ============================================================ */
+const I18N = {
+  ko: {
+    "hero.sub":"커버곡 PV / MV 제작<br>Cover · PV · MV<br>#서브컬쳐",
+    "btn.works":"작업물 보기","btn.comm":"커미션 신청",
+    "about.body":"안녕하세요, 영상 만들고 있는 Pad 입니다.<br>커버곡 PV / MV를 중심으로, 일러스트와 곡의 분위기에 맞춘 연출을 After Effects · Photoshop으로 제작합니다.",
+    "tag.sub":"#서브컬쳐","tag.cover":"#커버곡",
+    "sns.yt":"완성된 PV / MV 작업물","sns.x":"작업 소식 · DM 문의",
+    "p1":"커미션 신청 후 곡(믹싱본), 일러스트, 참고 영상을 확인합니다.",
+    "p2":"소스를 바탕으로 견적을 안내드리고, 입금 확인 후 작업을 시작합니다.",
+    "p3":"1차 렌더링은 풀 영상으로 전달드리며, 피드백은 1회 진행됩니다.",
+    "p4":"피드백 반영·수정 작업 후 최종본(mp4, 1920×1080)을 전달드립니다.",
+    "filter.all":"전체",
+    "spec.rev":"<em>2</em>회","spec.period":"시작일로부터 <em>30</em>일","spec.len":"4분 기준","spec.extra":"초과 시 +30초당 5,000원",
+    "use.h":"용도 구분","use.b":"방송용","use.c":"상업용",
+    "use.noprofit":"수익 창출 X","use.profit":"수익 창출 O","use.sns":"SNS 업로드 · 방송 송출 O",
+    "use.note":"※ 가격은 완성된 일러스트, 믹싱본, 참고 영상을 확인한 뒤 안내드립니다.",
+    "ref.h":"환불 정책","ref.1":"작업 시작 전","ref.2":"작업 도중","ref.3":"작업 완료 후",
+    "ref.full":"100% 환불","ref.half":"50% 환불","ref.no":"환불 불가",
+    "rules.h":"필독사항",
+    "rules.list":"<li>모든 영상 작업물은 포트폴리오로 사용될 수 있습니다.</li><li>영상의 저작권은 Pad에게 있으며 수정 및 2차 가공을 금지합니다. (저작권은 일체 양도되지 않습니다.)</li><li>모든 곡은 4분 기준이며, 초과 시 추가금이 있습니다. (+30초 5,000원)</li><li>영상은 After Effects, Photoshop으로 제작합니다.</li><li>영상에 들어가는 모든 오브젝트(일러스트, 음원 등)의 저작권 및 2차 수정 허락은 직접 받아주셔야 합니다.</li>",
+    "rules.note":"* AI 일러스트는 받지 않습니다.<br>* 위 사항을 읽지 않아 생기는 불이익은 책임지지 않습니다.",
+    "form.h":"신청 양식","form.copy":"복사","form.copied":"복사됨!",
+    "form.body":"신청자 닉네임 :\n라인업 :\n인원 수 :\n원본 링크 :\n예상 예산 :\n자막 언어 :\n원하는 레퍼런스, 요청사항 (필수 X) :",
+    "form.note":"* 원하시는 연출이 있으면 미리 기재해주세요.<br>* 캐릭터·배경 일러스트는 투명화(PNG) / PSD 상태로 전달해주세요.",
+    "btn.artmug":"아트머그에서 신청하기",
+    "contact.body":"커버곡 PV · MV 의뢰는 아트머그 또는 메일 · DM으로 편하게 문의주세요. 문의 시 일러스트, 믹싱본, 참고 영상을 함께 보내주시면 빠르게 견적 드려요. English / 日本語 OK."
+  },
+  en: {
+    "hero.sub":"Cover song PV / MV<br>Cover · PV · MV<br>#Subculture",
+    "btn.works":"View works","btn.comm":"Commission",
+    "about.body":"Hi, I'm Pad — a video creator.<br>I mainly make PVs / MVs for cover songs, crafting visuals that match the illustration and the mood of the track with After Effects · Photoshop.",
+    "tag.sub":"#Subculture","tag.cover":"#CoverSong",
+    "sns.yt":"Finished PV / MV works","sns.x":"Updates · DM inquiries",
+    "p1":"After your request, I review the song (mixed audio), illustrations and reference videos.",
+    "p2":"I send a quote based on your materials, and work begins once payment is confirmed.",
+    "p3":"The first render is delivered as a full-length video, with one round of feedback.",
+    "p4":"After applying feedback and revisions, I deliver the final video (mp4, 1920×1080).",
+    "filter.all":"All",
+    "spec.rev":"<em>2</em> rounds","spec.period":"<em>30</em> days from start","spec.len":"Up to 4 min","spec.extra":"+₩5,000 per extra 30 sec",
+    "use.h":"License type","use.b":"Broadcast","use.c":"Commercial",
+    "use.noprofit":"Monetization X","use.profit":"Monetization O","use.sns":"SNS upload · Streaming O",
+    "use.note":"※ Pricing is quoted after reviewing the finished illustrations, mixed audio and reference videos.",
+    "ref.h":"Refund policy","ref.1":"Before work starts","ref.2":"During work","ref.3":"After completion",
+    "ref.full":"100% refund","ref.half":"50% refund","ref.no":"No refund",
+    "rules.h":"Please read",
+    "rules.list":"<li>All videos may be used in my portfolio.</li><li>Copyright of the video belongs to Pad; editing or derivative use is not allowed. (Copyright is never transferred.)</li><li>Prices are based on a 4-minute song; longer songs cost extra. (+₩5,000 per 30 sec)</li><li>Videos are made with After Effects and Photoshop.</li><li>You must obtain copyright and modification permission for all assets used (illustrations, audio, etc.) yourself.</li>",
+    "rules.note":"* AI-generated illustrations are not accepted.<br>* I am not responsible for issues caused by not reading the above.",
+    "form.h":"Request form","form.copy":"Copy","form.copied":"Copied!",
+    "form.body":"Nickname :\nLineup :\nNumber of members :\nOriginal song link :\nEstimated budget :\nSubtitle language :\nReferences / requests (optional) :",
+    "form.note":"* If you have a specific direction in mind, please include it in advance.<br>* Character and background illustrations must be provided as transparent PNG / PSD.",
+    "btn.artmug":"Order on Artmug (KR)",
+    "contact.body":"For cover PV / MV commissions, feel free to reach out via email or X DM. Sending your illustrations, mixed audio and reference videos helps me quote faster. 한국어 / 日本語 OK."
+  },
+  ja: {
+    "hero.sub":"歌ってみた PV / MV 制作<br>Cover · PV · MV<br>#サブカル",
+    "btn.works":"作品を見る","btn.comm":"ご依頼について",
+    "about.body":"はじめまして、映像を制作している Pad です。<br>歌ってみた・カバー曲の PV / MV を中心に、イラストと楽曲の雰囲気に合わせた演出を After Effects · Photoshop で制作しています。",
+    "tag.sub":"#サブカル","tag.cover":"#歌ってみた",
+    "sns.yt":"完成した PV / MV 作品","sns.x":"制作情報 · DMでのご相談",
+    "p1":"ご依頼後、楽曲（ミックス音源）、イラスト、参考映像を確認します。",
+    "p2":"素材をもとにお見積りをご案内し、ご入金確認後に制作を開始します。",
+    "p3":"初稿はフル尺でお渡しし、フィードバックは1回となります。",
+    "p4":"フィードバック・修正を反映後、完成版（mp4, 1920×1080）を納品します。",
+    "filter.all":"すべて",
+    "spec.rev":"<em>2</em>回","spec.period":"開始から<em>30</em>日","spec.len":"4分まで","spec.extra":"超過30秒ごとに +5,000ウォン",
+    "use.h":"用途区分","use.b":"配信用","use.c":"商用",
+    "use.noprofit":"収益化 X","use.profit":"収益化 O","use.sns":"SNS投稿 · 配信 O",
+    "use.note":"※ 料金は完成イラスト、ミックス音源、参考映像を確認後にご案内します。",
+    "ref.h":"返金ポリシー","ref.1":"制作開始前","ref.2":"制作途中","ref.3":"制作完了後",
+    "ref.full":"100% 返金","ref.half":"50% 返金","ref.no":"返金不可",
+    "rules.h":"ご依頼前にお読みください",
+    "rules.list":"<li>制作した映像はすべてポートフォリオとして使用する場合があります。</li><li>映像の著作権は Pad に帰属し、編集・二次加工は禁止です。（著作権の譲渡は一切行いません。）</li><li>楽曲は4分を基準とし、超過分は追加料金がかかります。（+30秒 5,000ウォン）</li><li>映像は After Effects、Photoshop で制作します。</li><li>映像に使用する素材（イラスト・音源など）の著作権および二次利用の許可は、ご自身で取得してください。</li>",
+    "rules.note":"* AIイラストはお受けしておりません。<br>* 上記をお読みいただけなかったことによる不利益については責任を負いかねます。",
+    "form.h":"ご依頼フォーム","form.copy":"コピー","form.copied":"コピーしました！",
+    "form.body":"お名前（ニックネーム）：\nメンバー構成：\n人数：\n原曲リンク：\nご予算：\n字幕の言語：\n参考映像・ご要望（任意）：",
+    "form.note":"* ご希望の演出があれば事前にご記入ください。<br>* キャラクター・背景イラストは透過PNG / PSD形式でお送りください。",
+    "btn.artmug":"Artmugで依頼する（韓国）",
+    "contact.body":"PV / MV のご依頼・ご相談は、メールまたは X の DM までお気軽にどうぞ。イラスト、ミックス音源、参考映像を一緒にお送りいただくとスムーズにお見積りできます。English / 한국어 OK."
+  }
+};
+let LANG = "ko";
+
+/* ============================================================
+   ✏️ 여기만 수정하세요 — 작품 목록
+   url  : 유튜브 링크 (youtu.be / watch?v= / shorts 모두 OK)
+   type : 분류 이름 (같은 이름끼리 필터 버튼이 자동 생성됩니다)
+   첫 번째 항목은 큰 카드로 표시됩니다.
+   ============================================================ */
+const WORKS = [
+  { title: "となりの猫と恋知らず", artist: "Pad", type: "PV", year: "", url: "https://www.youtube.com/watch?v=aavcS3gndbs" },
+  { title: "Hebi - Be I (cover)", artist: "흑설", type: "Cover", year: "", url: "https://www.youtube.com/watch?v=Q5YbL7HHDzc" },
+  { title: "Propose (cover)", artist: "흑설", type: "Cover", year: "", url: "https://www.youtube.com/watch?v=RNb8yxU32MA" },
+];
+
+function ytId(u){
+  if(!u) return null;
+  const m = u.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
+const grid = document.getElementById('grid');
+const filters = document.getElementById('filters');
+const types = ["All", ...new Set(WORKS.map(w=>w.type))];
+const allLabel = ()=> I18N[LANG]["filter.all"];
+let current = "All";
+
+function renderFilters(){
+  filters.innerHTML = types.map(t=>`<button class="${t===current?'on':''}" data-t="${t}">${t==='All'?allLabel():t}</button>`).join('');
+}
+function renderGrid(){
+  const list = WORKS.filter(w=>current==="All"||w.type===current);
+  grid.innerHTML = list.map((w,i)=>{
+    const id = ytId(w.url);
+    const img = id ? `<img loading="lazy" src="https://img.youtube.com/vi/${id}/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${id}/hqdefault.jpg'" alt="">`
+                   : `<div class="ph">COMING SOON</div>`;
+    return `<div class="item rv" data-i="${WORKS.indexOf(w)}">
+      <div class="thumb">${img}<span class="tag">${w.type}</span><span class="play"><svg><use href="#playic"/></svg></span></div>
+      <div class="meta"><b>${w.title}<small>${w.artist||''}</small></b><span>${w.year||''}</span></div></div>`;
+  }).join('');
+  grid.querySelectorAll('.rv').forEach(el=>io.observe(el));
+}
+filters.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  current=b.dataset.t; renderFilters(); renderGrid();
+});
+
+/* lightbox */
+const lb=document.getElementById('lb'), lbFrame=document.getElementById('lbFrame'), lbMeta=document.getElementById('lbMeta');
+grid.addEventListener('click',e=>{
+  const it=e.target.closest('.item'); if(!it) return;
+  const w=WORKS[it.dataset.i]; const id=ytId(w.url); if(!id) return;
+  lbFrame.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  lbMeta.innerHTML=`<b>${w.title}<small>${w.artist||''} · ${w.type} · ${w.year||''}</small></b>`;
+  lb.classList.add('open'); document.body.style.overflow='hidden';
+});
+function closeLb(){lb.classList.remove('open');lbFrame.innerHTML='';document.body.style.overflow='';}
+document.getElementById('lbClose').onclick=closeLb;
+lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
+
+/* reveal on scroll */
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* nav */
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40),{passive:true});
+
+/* process connector lines */
+function drawLines(){
+  const g=document.getElementById('procGrid'), svg=document.getElementById('procLines');
+  const cards=[...g.querySelectorAll('.proc')]; const r=g.getBoundingClientRect();
+  let html='';
+  for(let i=0;i<cards.length-1;i++){
+    const a=cards[i].getBoundingClientRect(), b=cards[i+1].getBoundingClientRect();
+    const right = b.left > a.left;
+    const x1=(right? a.right : a.left+a.width*.3)-r.left, y1=(right? a.top+a.height*.5 : a.bottom)-r.top;
+    const x2=(right? b.left : b.left+b.width*.5)-r.left, y2=(right? b.top+b.height*.5 : b.top)-r.top;
+    html+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,.35)" stroke-width="1"/>
+           <circle cx="${x1}" cy="${y1}" r="3.5" fill="#fff"/><circle cx="${x2}" cy="${y2}" r="3.5" fill="#ff5a1f"/>`;
+  }
+  svg.innerHTML=html;
+}
+addEventListener('resize',drawLines); addEventListener('load',()=>setTimeout(drawLines,1100));
+
+/* hero parallax */
+const heroBg=document.querySelector('.hero-bg');
+addEventListener('scroll',()=>{heroBg.style.transform=`translateY(${scrollY*.25}px)`},{passive:true});
+
+document.getElementById('copyBtn').onclick=e=>{const t=document.getElementById('formText').innerText.trim();navigator.clipboard?.writeText(t).then(()=>{e.target.textContent=I18N[LANG]['form.copied'];setTimeout(()=>e.target.textContent=I18N[LANG]['form.copy'],1500)})};
+document.getElementById('yr').textContent=new Date().getFullYear();
+renderFilters(); renderGrid();
+
+/* language switch */
+function setLang(l){
+  if(!I18N[l]) l="ko";
+  LANG=l;
+  document.documentElement.lang = l;
+  const d=I18N[l];
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.dataset.i18n; if(d[k]==null) return;
+    if(k==='form.body') el.textContent=d[k]; else el.innerHTML=d[k];
+  });
+  document.querySelectorAll('#langSw button').forEach(b=>b.classList.toggle('on',b.dataset.l===l));
+  try{ localStorage.setItem('pad-lang',l) }catch(e){}
+  renderFilters();
+  setTimeout(drawLines,60);
+}
+document.getElementById('langSw').addEventListener('click',e=>{const b=e.target.closest('button'); if(b) setLang(b.dataset.l)});
+(function(){
+  let saved=null; try{ saved=localStorage.getItem('pad-lang') }catch(e){}
+  const q=new URLSearchParams(location.search).get('lang');
+  const nl=(navigator.language||'ko').slice(0,2);
+  setLang(q || saved || (nl==='ja'?'ja':nl==='ko'?'ko':'en'));
+})();
+
+</script>
+</body>
+</html>
